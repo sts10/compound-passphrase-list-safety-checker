@@ -1,0 +1,6 @@
+[package]
+name = "sum-word-checker"
+version = "0.1.0"
+authors = ["sts10 <sschlinkert@gmail.com>"]
+
+[dependencies]
