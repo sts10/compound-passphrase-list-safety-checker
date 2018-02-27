@@ -10,6 +10,14 @@ fn main() {
         "Mashed word list is {:?}",
         mash_words(make_vec("eff-word-list.txt"))
     );
+
+    println!(
+        "Bad words are {:?}",
+        search(
+            make_vec("eff-word-list.txt"),
+            mash_words(make_vec("eff-word-list.txt"))
+        )
+    );
 }
 
 fn make_vec(filename: &str) -> Vec<String> {
@@ -28,6 +36,7 @@ fn mash_words(word_list: Vec<String>) -> Vec<String> {
 
     for first_word in &word_list {
         for second_word in &word_list {
+            // should only push if word is same length or shorter than the longest word on the list
             mashed_words.push(first_word.to_owned() + &second_word);
         }
     }
@@ -35,7 +44,18 @@ fn mash_words(word_list: Vec<String>) -> Vec<String> {
     return mashed_words;
 }
 
-// fn search(word_list: Vec<String>, mashed_words_list: Vec<String>) -> Vec<String> {}
+fn search(word_list: Vec<String>, mashed_words_list: Vec<String>) -> Vec<String> {
+    let mut bad_words: Vec<String> = [].to_vec();
+    for mashed_word in mashed_words_list {
+        for word in &word_list {
+            if word == &mashed_word {
+                bad_words.push(word.to_string());
+            }
+        }
+        println!("Done with {}", mashed_word);
+    }
+    return bad_words;
+}
 
 // fn search_for_sum_words(word_list: Vec<String>) -> Vec<String> {
 //     let mut sum_words: Vec<String> = [].to_vec();
