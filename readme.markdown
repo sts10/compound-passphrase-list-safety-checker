@@ -6,9 +6,7 @@ This is an important quality of a diceware word list, since if these two words h
 
 An example of this would be **if** a word list included "under", "line", and "underline", a user might randomly get "under" and "line" in a row. The generated passphrase could be "crueltyfrailunderlinecyclingapostle", and the user might assume it had six words worth of entropy, or 77.55 bits of entropy. But really, an attacker brute forcing their way through _five_ word passphrases would crack it at some point, with the third guess being the compound word "underline". That would mean the passphrase actually only has 64.62 bits of entropy.
 
-I heard of this problem in this YouTube video:
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/Pe_3cFuSw1E?start=515" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+I heard of this problem in [this YouTube video](https://youtu.be/Pe_3cFuSw1E?t=8m36s), but I guessed that the folks who made the EFF list would be too smart to make that mistake.
 
 *Spoiler alert*: I did **NOT** find any 12.92 bits pairs of words in the EFF long word list! They were smart when they made it! 
 
