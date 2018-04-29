@@ -15,7 +15,8 @@ fn main() {
     //         mash_words(make_vec("eff-word-list.txt"))
     //     )
     // );
-    split_and_search(make_vec("eff-word-list.txt"));
+    split_and_search(make_vec("agile_words.txt"));
+    // split_and_search(make_vec("bad_word_test.txt"));
 }
 
 fn make_vec(filename: &str) -> Vec<String> {
@@ -58,21 +59,24 @@ fn mash_words(word_list: Vec<String>) -> Vec<String> {
 fn split_and_search(words: Vec<String>) {
     let mut bad_words: Vec<String> = [].to_vec();
     for mut word in words {
+        println!("Starting search of {}", word);
         for i in 0..word.len() {
             let length = &word.len();
             &word.truncate(length - 1);
             if (search(&word)) {
                 println!("I found {} as its own word", word);
+                bad_words.push(word.to_string());
             // need t osearch the other half of this word
             } else {
-                println!("Didn't find any matches for {}", word);
+                // println!("Didn't find any matches for {}", word);
             }
         }
     }
+    println!("Here are all the bad words I found {:?}", bad_words);
 }
 
 fn search(target_word: &str) -> bool {
-    let words = make_vec("eff-word-list.txt");
+    let words = make_vec("agile_words.txt");
     for word in words {
         if target_word == word {
             return true;
