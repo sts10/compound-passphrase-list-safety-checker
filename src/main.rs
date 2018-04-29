@@ -60,15 +60,16 @@ fn split_and_search(words: Vec<String>) {
     let mut bad_words: Vec<String> = [].to_vec();
     for mut word in words {
         println!("Starting search of {}", word);
+        let mut second_half = "".to_string();
         for i in 0..word.len() {
             let length = &word.len();
-            &word.truncate(length - 1);
+            second_half = format!("{}{}", &word.split_off(length - 1), second_half);
             if (search(&word)) {
-                println!("I found {} as its own word", word);
-                bad_words.push(word.to_string());
-            // need t osearch the other half of this word
-            } else {
-                // println!("Didn't find any matches for {}", word);
+                println!("I found {} as its own word. second half is {} and I should search for that now", word, second_half);
+                if (search(&second_half)) {
+                    bad_words.push(word.to_string());
+                    bad_words.push(second_half.to_string());
+                }
             }
         }
     }
@@ -77,6 +78,7 @@ fn split_and_search(words: Vec<String>) {
 
 fn search(target_word: &str) -> bool {
     let words = make_vec("agile_words.txt");
+    // let words = make_vec("bad_word_test.txt");
     for word in words {
         if target_word == word {
             return true;
