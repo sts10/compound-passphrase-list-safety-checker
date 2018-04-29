@@ -3,18 +3,19 @@ use std::io::BufRead;
 use std::fs::File;
 
 fn main() {
-    println!(
-        "Mashed word list is {:?}",
-        mash_words(make_vec("eff-word-list.txt"))
-    );
+    // println!(
+    //     "Mashed word list is {:?}",
+    //     mash_words(make_vec("eff-word-list.txt"))
+    // );
 
-    println!(
-        "Bad words are {:?}",
-        search(
-            make_vec("eff-word-list.txt"),
-            mash_words(make_vec("eff-word-list.txt"))
-        )
-    );
+    // println!(
+    //     "Bad words are {:?}",
+    //     search(
+    //         make_vec("eff-word-list.txt"),
+    //         mash_words(make_vec("eff-word-list.txt"))
+    //     )
+    // );
+    split_and_search(make_vec("eff-word-list.txt"));
 }
 
 fn make_vec(filename: &str) -> Vec<String> {
@@ -41,15 +42,41 @@ fn mash_words(word_list: Vec<String>) -> Vec<String> {
     return mashed_words;
 }
 
-fn search(word_list: Vec<String>, mashed_words_list: Vec<String>) -> Vec<String> {
+// fn search(word_list: Vec<String>, mashed_words_list: Vec<String>) -> Vec<String> {
+//     let mut bad_words: Vec<String> = [].to_vec();
+//     for mashed_word in mashed_words_list {
+//         for word in &word_list {
+//             if word == &mashed_word {
+//                 bad_words.push(word.to_string());
+//             }
+//         }
+//         println!("Done with {}", mashed_word);
+//     }
+//     return bad_words;
+// }
+
+fn split_and_search(words: Vec<String>) {
     let mut bad_words: Vec<String> = [].to_vec();
-    for mashed_word in mashed_words_list {
-        for word in &word_list {
-            if word == &mashed_word {
-                bad_words.push(word.to_string());
+    for mut word in words {
+        for i in 0..word.len() {
+            let length = &word.len();
+            &word.truncate(length - 1);
+            if (search(&word)) {
+                println!("I found {} as its own word", word);
+            // need t osearch the other half of this word
+            } else {
+                println!("Didn't find any matches for {}", word);
             }
         }
-        println!("Done with {}", mashed_word);
     }
-    return bad_words;
+}
+
+fn search(target_word: &str) -> bool {
+    let words = make_vec("eff-word-list.txt");
+    for word in words {
+        if target_word == word {
+            return true;
+        }
+    }
+    return false;
 }
