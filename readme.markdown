@@ -22,8 +22,10 @@ However, in the 1Password list (labeled `agile_words.txt`), I found 2,661 compou
 
 NOTE: 1Password's software, as far as I know, does NOT allow users to generate random passphrase without punctuation between words. Users _must_ choose to separate words with a period, hyphen, space, comma, or underscore. So these findings do NOT constitute a security issue with 1Password.
 
-However, if 1Password wanted to safely offer users the choice of having no separator between words, they could remove the 1,511 bad single words from their list. This would take their list down from 18,328 words to 16,817. 
+## A Suggestion
 
-This reduction does have a cost, however. Given the current list of 18,328 words, when a user adds one of these words to their passphrase, they're adding about 14.162 bits of entropy to their passphrase. Using the shortened, 16,817 word list, each randomly generated word would add about 14.038 bits to the passphrase. Of course, alternatively, Agile/1Password could replace the 1,511 words with words that cannot be combined to make other words on their list.
+The aim of the `find_words_to_remove` function is to remove the fewest number of these bad words to make the list "clean", i.e. to safely offer users the option of having no separator between the words of a passphrase. When I ran it on the Agile wordlist, I got 498 words back, which I dumped in to `findings/words_to_remove_from_agile_list.txt`. 
+
+Removing these 498 words -- thus reducing the length of the list from 18,328 words to 17,830 -- would have a cost, however. Given the current list of 18,328 words, when a user adds one of these words to their passphrase, they're adding about 14.162 bits of entropy to their passphrase. Using the shortened, 17,830 word list, each randomly generated word would add about 14.122 bits to the passphrase. Of course, alternatively, Agile/1Password could replace the 498 words with words that cannot be combined to make other words on their list.
 
 
