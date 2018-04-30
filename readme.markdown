@@ -18,7 +18,7 @@ I heard of this potential issue in [this YouTube video](https://youtu.be/Pe_3cFu
 
 I did not find any "bad" pairs of words in the EFF long word list.
 
-However, in the 1Password list (labeled `agile_words.txt`), I found 2,661 compound words (see: "agile_double_bad_words.txt"), made up of 1,511 unique bad single words (see: "agile_single_bad_words.txt"). 
+However, in the 1Password list (labeled `agile_words.txt`), I found 2,661 compound words (see: `findings/agile_double_bad_words.txt`), made up of 1,511 unique bad single words (see: `findings/agile_single_bad_words.txt`). 
 
 NOTE: 1Password's software, as far as I know, does NOT allow users to generate random passphrase without punctuation between words. Users _must_ choose to separate words with a period, hyphen, space, comma, or underscore. So these findings do NOT constitute a security issue with 1Password.
 
