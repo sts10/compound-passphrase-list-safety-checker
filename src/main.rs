@@ -3,8 +3,12 @@ use std::io::BufRead;
 use std::fs::File;
 
 fn main() {
-    split_and_search(make_vec("agile_words.txt"));
-    // split_and_search(make_vec("bad_word_test.txt"));
+    // let (single_bad_words, double_bad_words) = split_and_search(make_vec("bad_word_test.txt"));
+    let (single_bad_words, double_bad_words) = split_and_search(make_vec("agile_words.txt"));
+    println!(
+        "Recommend you remove: {:?}",
+        find_words_to_remove(single_bad_words, double_bad_words)
+    );
 }
 
 fn make_vec(filename: &str) -> Vec<String> {
@@ -18,8 +22,9 @@ fn make_vec(filename: &str) -> Vec<String> {
     return word_list;
 }
 
-fn split_and_search(words: Vec<String>) {
-    let mut bad_words: Vec<String> = [].to_vec();
+fn split_and_search(words: Vec<String>) -> (Vec<String>, Vec<Vec<String>>) {
+    let mut single_bad_words: Vec<String> = [].to_vec();
+    let mut double_bad_words: Vec<Vec<String>> = [].to_vec();
     for mut word in words {
         println!("Starting search of {}", word);
         let mut second_half = "".to_string();
@@ -29,13 +34,15 @@ fn split_and_search(words: Vec<String>) {
             if search(&word) {
                 println!("I found {} as its own word. second half is {} and I should search for that now", word, second_half);
                 if search(&second_half) {
-                    bad_words.push(word.to_string());
-                    bad_words.push(second_half.to_string());
+                    single_bad_words.push(word.to_string());
+                    single_bad_words.push(second_half.to_string());
+                    double_bad_words.push(vec![word.to_string(), second_half.to_string()]);
                 }
             }
         }
     }
-    println!("Here are all the bad words I found {:?}", bad_words);
+    println!("Here are all the bad words I found {:?}", single_bad_words);
+    (single_bad_words, double_bad_words)
 }
 
 fn search(target_word: &str) -> bool {
@@ -47,4 +54,32 @@ fn search(target_word: &str) -> bool {
         }
     }
     return false;
+}
+
+fn find_words_to_remove(
+    single_bad_words: Vec<String>,
+    double_bad_words: Vec<Vec<String>>,
+) -> Vec<String> {
+    let mut words_to_remove: Vec<String> = [].to_vec();
+    for word_vec in double_bad_words {
+        let mut first_word_appearances = 0;
+        let mut second_word_appearances = 0;
+        for word in &single_bad_words {
+            if &word_vec[0] == word {
+                first_word_appearances = first_word_appearances + 1;
+            }
+            if &word_vec[1] == word {
+                second_word_appearances = second_word_appearances + 1;
+            }
+        }
+        if first_word_appearances >= second_word_appearances {
+            words_to_remove.push(word_vec[0].to_string());
+        } else {
+            words_to_remove.push(word_vec[1].to_string());
+        }
+    }
+
+    words_to_remove.sort();
+    words_to_remove.dedup();
+    return words_to_remove;
 }
