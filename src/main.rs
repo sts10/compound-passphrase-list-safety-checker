@@ -99,11 +99,9 @@ fn make_clean_list(words_to_remove: Vec<String>, original_list: Vec<String>) -> 
         for word_to_remove in &words_to_remove {
             if word_to_remove == &original_word {
                 bad_word = true;
-            } else {
-                bad_word = false;
             }
         }
-        if !bad_word {
+        if bad_word == false {
             clean_words.push(original_word);
         }
     }

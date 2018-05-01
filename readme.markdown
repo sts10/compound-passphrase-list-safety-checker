@@ -1,12 +1,12 @@
 # Compound Passphrase Safety Checker
 
-This Rust scripts checks whether a given diceware word list has any words that can be combined to make another word on the list.
+This Rust scripts checks whether a given passphrase word list (such as a diceware word list) has any words that can be combined to make another word on the list.
 
 Initially I wanted to make sure that no two words in [the EFF's long diceware word list](https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases) could be combined to make another word on the list. I later checked the list that 1Password uses.
 
 ## What is "compound-safety"? 
 
-I made up the term. Here's what I mean: 
+I made up the term. Here's what I mean by it: 
 
 A passphrase list is "compound-safe" if it does NOT contain any pairs of words that can be combined to make another word on the list. 
 
@@ -26,7 +26,7 @@ I heard of this potential issue in [this YouTube video](https://youtu.be/Pe_3cFu
 
 ## What this script does
 
-This Rust script takes a word list (as a text file) as an input. It then searches for words that can be combined to make other words on the list.
+This Rust script takes a word list (as a text file) as an input. It then searches the given list for words that can be combined to make other words on the list.
 
 Next, it attempts to find the smallest number of words that need to be removed in order to make the given word list "compound-safe". Finally, it prints out this new, shorter, compound-safe list to a new text file. In this way it makes word lists "compound-safe".
 
@@ -38,10 +38,10 @@ However, in the 1Password list (labeled `agile_words.txt` in my project, copy fr
 
 NOTE: 1Password's software, as far as I know, does NOT allow users to generate random passphrase without punctuation between words. Users _must_ choose to separate words with a period, hyphen, space, comma, or underscore. So these findings do NOT constitute a security issue with 1Password.
 
-## A Suggestion
+## 1Password: An example and suggestion
 
-The aim of the `find_words_to_remove` function is to remove the fewest number of these bad words to make the list compound-safe. When I ran it on the Agile wordlist, I got 498 words back, which I dumped in to `findings/words_to_remove_from_agile_list.txt`. 
+The aim of the `find_words_to_remove` function is to remove the fewest number of these bad words to make the list compound-safe. When I ran it on the 1Password wordlist, I got 498 words back, which I dumped in to `findings/words_to_remove_from_agile_list.txt`. 
 
-Removing these 498 words -- thus reducing the length of the list from 18,328 words to 17,830 -- would have a cost, however. Given the current list of 18,328 words, when a user adds one of these words to their passphrase, they're adding about 14.162 bits of entropy to their passphrase. Using the shortened, 17,830 word list, each randomly generated word would add about 14.122 bits to the passphrase. Of course, alternatively, Agile/1Password could replace the 498 words with words that cannot be combined to make other words on their list.
+Removing these 498 words -- thus reducing the length of the list from 18,328 words to 17,830 -- would have a cost, however. Given the current list of 18,328 words, when a user adds one of these words to their passphrase, they're adding about 14.162 bits of entropy to their passphrase. Using the shortened, 17,830 word list, each randomly generated word would add about 14.122 bits to the passphrase. Of course, alternatively, Agile Bits/1Password could replace the 498 words while keeping the list compound-safe.
 
 
