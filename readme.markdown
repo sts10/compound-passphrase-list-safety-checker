@@ -1,30 +1,46 @@
-# Half-Entropy Diceware Word Checker
+# Compound Passphrase Safety Checker
 
 This Rust scripts checks whether a given diceware word list has any words that can be combined to make another word on the list.
 
 Initially I wanted to make sure that no two words in [the EFF's long diceware word list](https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases) could be combined to make another word on the list. I later checked the list that 1Password uses.
 
-## Why might these "half-entropy words be bad?
+## What is "compound-safety"? 
 
-If, in randomly generating a passphrase, two of these half-entropy words happen to appear next to each other -- **_without_ a separating punctuation mark** -- the user would only be adding one word's worth of entropy to their password instead of the expected two words of entropy. 
+I made up the term. Here's what I mean: 
 
-An example of this would be **if** a word list included "under", "dog", and "underdog", a user might randomly get "under" and "dog" in a row. The generated passphrase could be "crueltyfrailunderdogcyclingapostle", and the user might assume it had six words worth of entropy. But really, an attacker brute forcing their way through _five_-word passphrases would crack it at some point, with the third guess being the compound word "underline". 
+A passphrase list is "compound-safe" if it does NOT contain any pairs of words that can be combined to make another word on the list. 
+
+For example, if a word list included "under", "dog", and "underdog" as three separate words, it would NOT be compound-safe, since "under" and "dog" can be combined to make the word "underdog". 
+
+## Why is this attribute of a passphrase list notable? 
+
+Let's say we're using the word list described above, which has "under", "dog" and "underdog" in it. A user might randomly get "under" and "dog" in a row, for example in the six-word passphrase "crueltyfrailunderdogcyclingapostle". The user might assume they had six words worth of entropy. But really, an attacker brute forcing their way through five-word passphrases would eventually crack the passphrase.
+
+It's important to note that if the passphrase has any punctuation (for example, a period, comma, hyphen, space) between words, this issue goes away completely.  "cruelty frail under dog cycling apostle" is indeed a six-word passphrase, and an attacker who tries "underdog" as the third word does not get a match.
+
+To summarize: In creating passphrases without spaces between the words, there's a small risk that users will put two words together that form another word on this list. When this happens, they lose one word's worth of entropy from their password. 
 
 Again, it's super important to understand that putting a hyphen or space between the words ("cruelty frail under dog cycling apostle") eliminates this problem completely.
 
 I heard of this potential issue in [this YouTube video](https://youtu.be/Pe_3cFuSw1E?t=8m36s). 
 
-## Findings
+## What this script does
 
-I did not find any "bad" pairs of words in the EFF long word list.
+This Rust script takes a word list (as a text file) as an input. It then searches for words that can be combined to make other words on the list.
 
-However, in the 1Password list (labeled `agile_words.txt`), I found 2,661 compound words (see: `findings/agile_double_bad_words.txt`), made up of 1,511 unique bad single words (see: `findings/agile_single_bad_words.txt`). 
+Next, it attempts to find the smallest number of words that need to be removed in order to make the given word list "compound-safe". Finally, it prints out this new, shorter, compound-safe list to a new text file. In this way it makes word lists "compound-safe".
+
+## Some initial findings
+
+I did not find any compound-unsafe pairs of words in the [EFF long word list](https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases). In other words, according to my script, the EFF long word list is compound-safe.
+
+However, in the 1Password list (labeled `agile_words.txt` in my project, copy from [this 1Password challenge](https://github.com/agilebits/crackme/blob/master/doc/AgileWords.txt)), I found 2,661 compound words (see: `findings/agile_double_bad_words.txt`), made up of 1,511 unique bad single words (see: `findings/agile_single_bad_words.txt`). 
 
 NOTE: 1Password's software, as far as I know, does NOT allow users to generate random passphrase without punctuation between words. Users _must_ choose to separate words with a period, hyphen, space, comma, or underscore. So these findings do NOT constitute a security issue with 1Password.
 
 ## A Suggestion
 
-The aim of the `find_words_to_remove` function is to remove the fewest number of these bad words to make the list "clean", i.e. to safely offer users the option of having no separator between the words of a passphrase. When I ran it on the Agile wordlist, I got 498 words back, which I dumped in to `findings/words_to_remove_from_agile_list.txt`. 
+The aim of the `find_words_to_remove` function is to remove the fewest number of these bad words to make the list compound-safe. When I ran it on the Agile wordlist, I got 498 words back, which I dumped in to `findings/words_to_remove_from_agile_list.txt`. 
 
 Removing these 498 words -- thus reducing the length of the list from 18,328 words to 17,830 -- would have a cost, however. Given the current list of 18,328 words, when a user adds one of these words to their passphrase, they're adding about 14.162 bits of entropy to their passphrase. Using the shortened, 17,830 word list, each randomly generated word would add about 14.122 bits to the passphrase. Of course, alternatively, Agile/1Password could replace the 498 words with words that cannot be combined to make other words on their list.
 

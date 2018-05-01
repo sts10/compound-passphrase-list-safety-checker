@@ -1,14 +1,22 @@
 use std::io::BufReader;
 use std::io::BufRead;
+use std::io::Write;
 use std::fs::File;
 
 fn main() {
     // let (single_bad_words, double_bad_words) = split_and_search(make_vec("bad_word_test.txt"));
     let (single_bad_words, double_bad_words) = split_and_search(make_vec("agile_words.txt"));
-    println!(
-        "Recommend you remove: {:?}",
-        find_words_to_remove(single_bad_words, double_bad_words)
-    );
+    let words_to_remove = find_words_to_remove(single_bad_words, double_bad_words);
+
+    println!("Making compound-safe list");
+    // let clean_word_list = make_clean_list(words_to_remove, make_vec("bad_word_test.txt"));
+    let clean_word_list = make_clean_list(words_to_remove, make_vec("agile_words.txt"));
+
+    let mut f = File::create("compound-safe_word_list.txt").expect("Unable to create file");
+    for i in &clean_word_list {
+        // f.write(i).expect("Unable to write data");
+        writeln!(f, "{}", i);
+    }
 }
 
 fn make_vec(filename: &str) -> Vec<String> {
@@ -46,8 +54,8 @@ fn split_and_search(words: Vec<String>) -> (Vec<String>, Vec<Vec<String>>) {
 }
 
 fn search(target_word: &str) -> bool {
-    let words = make_vec("agile_words.txt");
     // let words = make_vec("bad_word_test.txt");
+    let words = make_vec("agile_words.txt");
     for word in words {
         if target_word == word {
             return true;
@@ -82,4 +90,22 @@ fn find_words_to_remove(
     words_to_remove.sort();
     words_to_remove.dedup();
     return words_to_remove;
+}
+
+fn make_clean_list(words_to_remove: Vec<String>, original_list: Vec<String>) -> Vec<String> {
+    let mut clean_words: Vec<String> = [].to_vec();
+    for original_word in original_list {
+        let mut bad_word = false;
+        for word_to_remove in &words_to_remove {
+            if word_to_remove == &original_word {
+                bad_word = true;
+            } else {
+                bad_word = false;
+            }
+        }
+        if !bad_word {
+            clean_words.push(original_word);
+        }
+    }
+    clean_words
 }
