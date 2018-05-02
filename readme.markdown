@@ -53,7 +53,7 @@ cargo run <wordlist-to-check.txt> <output.txt>
 
 I did not find any compound-unsafe pairs of words in the [EFF long word list](https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases). In other words, according to my script, the EFF long word list is compound-safe.
 
-However, in the 1Password list (labeled `agile_words.txt` in my project, copy from [this 1Password challenge](https://github.com/agilebits/crackme/blob/master/doc/AgileWords.txt)), I found 2,661 compound words (see: `scrap-lists-of-compound-words-and-components/agile_double_bad_words.txt`), made up of 1,511 unique bad single words (see: `scrap-lists-of-compound-words-and-components/agile_single_bad_words.txt`). 
+However, in the 1Password list (labeled `word_lists/agile_words.txt` in this project, copied from [this 1Password challenge](https://github.com/agilebits/crackme/blob/master/doc/AgileWords.txt)), I found 2,661 compound words (see: `scrap-lists-of-compound-words-and-components/agile_double_bad_words.txt`), made up of 1,511 unique bad single words (see: `scrap-lists-of-compound-words-and-components/agile_single_bad_words.txt`). 
 
 NOTE: 1Password's software, as far as I know, does NOT allow users to generate random passphrase without punctuation between words. Users _must_ choose to separate words with a period, hyphen, space, comma, or underscore. So these findings do NOT constitute a security issue with 1Password.
 
@@ -61,8 +61,11 @@ NOTE: 1Password's software, as far as I know, does NOT allow users to generate r
 
 The aim of the `find_words_to_remove` function is to remove the fewest number of these bad words to make the list compound-safe. When I ran it on the 1Password wordlist, I got 498 words back, which I dumped in to `scrap-lists-of-compound-words-and-components/words_to_remove_from_agile_list.txt`. 
 
-Then the `make_clean_list` function removes these 498 words, giving us the list found in `compound-safe_word_lists/agile_words_compound-safe.txt`, a list of 17,830 words compound-safe words.
+Then the `make_clean_list` function removes these 498 words, giving us the list found in `word_lists/agile_words.txt.compound-safe`, a list of 17,830 words compound-safe words.
 
 Now, we should note that reducing the length of the list from 18,328 words to 17,830 has a cost. Given 1Password's current list of 18,328 words, when a user adds one of these words to their passphrase, they're adding about 14.162 bits of entropy to their passphrase. Using the shortened, compound-safe 17,830 word list, each randomly generated word would add about 14.122 bits to the passphrase. Of course, Agile Bits/1Password could replace the 498 words while keeping the list compound-safe.
 
+## Still to do 
 
+- Use multiple threads to speed up the process. 
+- Make the command line text output during the process cleaner and more professional-looking.
