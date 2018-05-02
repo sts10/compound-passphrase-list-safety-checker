@@ -1,4 +1,4 @@
-# Compound Passphrase Safety Checker
+# Compound Passphrase List Safety Checker
 
 This Rust scripts checks whether a given passphrase word list (such as a diceware word list) has any words that can be combined to make another word on the list.
 
