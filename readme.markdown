@@ -28,6 +28,20 @@ Again, it's super important to understand that putting a hyphen or space between
 
 I heard of this potential issue in [this YouTube video](https://youtu.be/Pe_3cFuSw1E?t=8m36s). 
 
+## Does a compounding make a passphrase weaker? Does this matter?
+
+Is "crueltyfrailunderdogcyclingapostle" a "weaker" passphrase than a 6-word phrase that does not have a compounding in it? Honestly I'm not sure. The only concrete situation where it might is if an attacker is brute forcing through all 5-word phrases before brute forcing all 6-word phrases, and in this case would break the compounded 6-word phrase slightly earlier than a non-compounded 6-word phrase. (How much earlier?)
+
+But **if an attacker knew your passphrase was 6 words, I'm not sure if a phrase with a compounding is "worse" (i.e. going to be cracked earlier) or as good as one without**.
+
+## The "Venn-diagram" problem (or, the "left-eye, right-eye" problem)
+
+What if we generated a passphrase and, at some point in it, got "paperboyhood"? As we've learned, if "paper", "boy", and "paperboy" are all words in our list, we have a compounding. Likewise if "boy", "hood", and "boyhood" are all on our list we have a second compounding. What's notable here in this particular case is that if _all four_ words -- "paper", "paperboy", "boy" and "boyhood" -- are on the list, then"paperboyhood" would come up not once but twice in the space of a 2-word brute force attack. 
+
+Now I _think_ this tool would remove either the word "paper" or "boy" in this situation, due to that being a normal compounding, neuatralizing this Venn diagram problem as well. But I'm not sure, so that's something to look into. 
+
+Fediverse user varx brought [this situation to my attention](https://i.write.codethat.sucks/@varx/99957388754676479).
+
 ## What this tool does
 
 This tool takes a word list (as a text file) as an input. It then searches the given list for words that can be combined to make other words on the list.
@@ -72,6 +86,8 @@ Now, we should note that reducing the length of the list from 18,328 words to 17
 ## A caveat
 
 We've explored "two-word compounding", where two words are actually one, but is there a possibility of a three-word compounding -- where three words become two? This tool does NOT currently check for this, so I can't actually guarantee that the lists outputted by the tool are completely compound-safe.
+
+I'm also not 100% that this tool makes a list safe from the Venn diagram problem described above.
 
 ## To do
 
