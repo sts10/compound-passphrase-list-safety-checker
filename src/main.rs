@@ -26,9 +26,26 @@ fn main() {
         writeln!(f, "{}", i).expect("Unable to write data to file");
     }
 
-    // let original_list_length = make_vec(word_list_to_check_filename).len();
-    // println!("You're original word list had {} words ({} bits per word).", make_vec(word_list_to_check_filename).len(), log(2.0, make_vec(word_list_to_check_filename).len()));
-    // println!("list had {} words ({} bits per word).", make_vec(word_list_to_check_filename).len(), log(2.0, make_vec(word_list_to_check_filename).len()));
+    println!("");
+    println!("------------------------");
+    println!("");
+    let original_list_length = make_vec(word_list_to_check_filename).len() as f64;
+    let clean_list_length = clean_word_list.len() as f64;
+    println!(
+        "You're inputted word list had {} words ({} bits per word).",
+        original_list_length,
+        log_base(2, original_list_length)
+    );
+    println!("");
+    if clean_list_length == original_list_length {
+        println!("I didn't find any problematic words. Your inputted word list appears to be compound-safe as is!");
+    } else {
+        println!(
+            "The compound-safe list I made has {} words ({} bits per word).",
+            clean_list_length,
+            log_base(2, clean_list_length)
+        );
+    }
 }
 
 fn make_vec(filename: &str) -> Vec<String> {
