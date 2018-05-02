@@ -56,6 +56,13 @@ fn split_and_search(
                     single_bad_words.push(second_half.to_string());
                     double_bad_words.push(vec![word.to_string(), second_half.to_string()]);
                 }
+                // might want to put this logic first
+                // for word in &words {
+                //     if &second_half == word[0..&second_half.len()] {
+                //         remove first_half
+                //     }
+                // }
+                //
             }
         }
     }
