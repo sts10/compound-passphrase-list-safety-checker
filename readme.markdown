@@ -36,9 +36,18 @@ But **if an attacker knew your passphrase was 6 words, I'm not sure if a phrase 
 
 ## The "Venn-diagram" problem (or, the "left-eye, right-eye" problem)
 
-What if we generated a passphrase and, at some point in it, got "paperboyhood"? As we've learned, if "paper", "boy", and "paperboy" are all words in our list, we have a compounding. Likewise if "boy", "hood", and "boyhood" are all on our list we have a second compounding. What's notable here in this particular case is that if _all four_ words -- "paper", "paperboy", "boy" and "boyhood" -- are on the list, then"paperboyhood" would come up not once but twice in the space of a 2-word brute force attack. 
+What if we generated a passphrase and, at some point in it, got "paperboyhood"? As we've learned, if "paper", "boy", and "paperboy" are all words in our list, we have a compounding. Likewise if "boy", "hood", and "boyhood" are all on our list we have a second compounding. 
 
-Now I _think_ this tool would remove either the word "paper" or "boy" in this situation, due to that being a normal compounding, neuatralizing this Venn diagram problem as well. But I'm not sure, so that's something to look into. 
+However, if our list is: 
+
+```
+paper
+paperboy
+boyhood
+hood
+``` 
+
+within the 2-phrase guess space we'll have "paperboyhood" appear twice: once as [paperboy][hood] and again as [paper][boyhood]. Unfortunately I don't think the current version of this tool would do anything about this situation.
 
 Note: A Fediverse user brought this situation to my attention.
 
@@ -83,11 +92,13 @@ Then the `make_clean_list` function removes these 498 words, giving us the list 
 
 Now, we should note that reducing the length of the list from 18,328 words to 17,830 has a cost. Given 1Password's current list of 18,328 words, when a user adds one of these words to their passphrase, they're adding about 14.162 bits of entropy to their passphrase. Using the shortened, compound-safe 17,830 word list, each randomly generated word would add about 14.122 bits to the passphrase. Of course, Agile Bits/1Password could replace the 498 words while keeping the list compound-safe.
 
+## Known issues
+
+See: Venn diagram problem described above
+
 ## A caveat
 
 We've explored "two-word compounding", where two words are actually one, but is there a possibility of a three-word compounding -- where three words become two? This tool does NOT currently check for this, so I can't actually guarantee that the lists outputted by the tool are completely compound-safe.
-
-I'm also not 100% that this tool makes a list safe from the Venn diagram problem described above.
 
 ## To do
 
