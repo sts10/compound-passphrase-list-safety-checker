@@ -1,11 +1,16 @@
+use std::env;
 use std::io::BufReader;
 use std::io::BufRead;
 use std::io::Write;
 use std::fs::File;
 
 fn main() {
-    let word_list_to_check_filename = "word_lists_to_check/bad_word_test.txt";
-    let compound_safe_list_output = "compound-safe_word_lists/bad_word_test_compound-safe.txt";
+    let args: Vec<String> = env::args().collect();
+    let word_list_to_check_filename = &args[1];
+    let mut compound_safe_list_output = format!("{}.compound-safe", &word_list_to_check_filename);
+    if args.len() == 3 {
+        compound_safe_list_output = args[2].to_string();
+    }
     let (single_bad_words, double_bad_words) = split_and_search(
         make_vec(word_list_to_check_filename),
         word_list_to_check_filename,

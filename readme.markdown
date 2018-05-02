@@ -30,6 +30,25 @@ This Rust script takes a word list (as a text file) as an input. It then searche
 
 Next, it attempts to find the smallest number of words that need to be removed in order to make the given word list "compound-safe". Finally, it prints out this new, shorter, compound-safe list to a new text file. In this way it makes word lists "compound-safe".
 
+## How to use this script to check a word list
+
+First you'll need to [install Rust](https://www.rust-lang.org/en-US/install.html). Make sure running the command `cargo --version` returns something that starts with something like `cargo 0.26.0`. 
+
+Next, clone down this repo. To run the script, cd into the repo's directory and run:
+
+```
+cargo run <wordlist.txt>
+```
+
+This will create a file named `wordlist.txt.compound-safe` that is the compound-safe list of your word list (obviously may be shorter). 
+
+You can also specify a specific output file location:
+
+```
+cargo run <wordlist-to-check.txt> <output.txt>
+```
+
+
 ## Some initial findings
 
 I did not find any compound-unsafe pairs of words in the [EFF long word list](https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases). In other words, according to my script, the EFF long word list is compound-safe.
