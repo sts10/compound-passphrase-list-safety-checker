@@ -1,6 +1,6 @@
 # Compound Passphrase List Safety Checker
 
-This Rust command line tool checks whether a given passphrase word list (such as a diceware word list) has any words that can be combined to make another word on the list.
+This command line tool checks whether a given passphrase word list (such as a diceware word list) has any words that can be combined to make another word on the list. It's written in Rust, which I am new to, so please use this with caution.
 
 Initially I wanted to make sure that no two words in [the EFF's long diceware word list](https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases) could be combined to make another word on the list. I later checked the list that 1Password uses.
 
@@ -26,7 +26,7 @@ I heard of this potential issue in [this YouTube video](https://youtu.be/Pe_3cFu
 
 ## What this tool does
 
-This Rust tool takes a word list (as a text file) as an input. It then searches the given list for words that can be combined to make other words on the list.
+This tool takes a word list (as a text file) as an input. It then searches the given list for words that can be combined to make other words on the list.
 
 Next, it attempts to find the smallest number of words that need to be removed in order to make the given word list "compound-safe". Finally, it prints out this new, shorter, compound-safe list to a new text file. In this way it makes word lists "compound-safe".
 
@@ -69,5 +69,6 @@ Now, we should note that reducing the length of the list from 18,328 words to 17
 
 - Use multiple threads to speed up the process. 
 - Make the command line text output during the process cleaner and more professional-looking.
+- Make the Rust code simpler and/or more idiomatic.
 
 A question: Given a word list that is not compound safe, calculate the probability of generating a non-safe pair in a passphrase. Part two: Given this probability, calculate the revised bits-per-word of the list.
