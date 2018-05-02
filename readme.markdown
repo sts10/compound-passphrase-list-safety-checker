@@ -6,6 +6,8 @@ Initially I wanted to make sure that no two words in [the EFF's long diceware wo
 
 **Disclosure**: I am not a professional researcher or statistician, and frankly I'm pretty fuzzy on some of this math. This code/theory/explanation could be very wrong (but hopefully not harmful?). If you think it could be wrong or harmful, please leave an issue! 
 
+Further disclosure: see "Caveat" section below.
+
 ## What is "compound-safety"? 
 
 I made up the term. Here's what I mean by it: 
@@ -16,11 +18,11 @@ For example, if a word list included "under", "dog", and "underdog" as three sep
 
 ## Why is this attribute of a passphrase word list notable? 
 
-Let's say we're using the word list described above, which has "under", "dog" and "underdog" in it. A user might randomly get "under" and "dog" in a row, for example in the six-word passphrase "crueltyfrailunderdogcyclingapostle". The user might assume they had six words worth of entropy. But really, an attacker brute forcing their way through five-word passphrases would eventually crack the passphrase.
+Let's say we're using the word list described above, which has "under", "dog" and "underdog" in it. A user might randomly get "under" and "dog" in a row, for example in the six-word passphrase "crueltyfrailunderdogcyclingapostle". The user might assume they had six words worth of entropy. But really, an attacker brute forcing their way through five-word passphrases would eventually crack the passphrase. We can call this event "a compounding".
 
-It's important to note that if the passphrase has any punctuation (for example, a period, comma, hyphen, space) between words, this issue goes away completely. "cruelty frail under dog cycling apostle" is indeed a six-word passphrase, and an attacker who tries "underdog" as the third word does not get a match.
+**It's important to note** that if the passphrase has any punctuation (for example, a period, comma, hyphen, space) between words, this issue goes away completely. "cruelty frail under dog cycling apostle" is indeed a six-word passphrase, and an attacker who tries "underdog" as the third word does not get a match.
 
-To summarize: When creating passphrases without punctuation between the words with a word list that is NOT compound-safe, there's a small risk that users will put two words together that form another word on this list. When this happens, they lose one word's worth of entropy from their password. However if they used a compound-safe list, they can safely not use punctuation between words.
+To summarize: When creating passphrases without punctuation between the words with a word list that is NOT compound-safe, there's a small risk that users will put two words together that form another word on this list. When this happens (which we might call "a compounding"), they lose one word's worth of entropy from their password. However if they used a compound-safe list, they can safely not use punctuation between words, since compounding cannot occur (or at least, are less likely to occur -- see "Caveat" section below).
 
 Again, it's super important to understand that putting a hyphen or space between the words ("cruelty frail under dog cycling apostle") eliminates this problem completely.
 
@@ -30,7 +32,7 @@ I heard of this potential issue in [this YouTube video](https://youtu.be/Pe_3cFu
 
 This tool takes a word list (as a text file) as an input. It then searches the given list for words that can be combined to make other words on the list.
 
-Next, it attempts to find the smallest number of words that need to be removed in order to make the given word list "compound-safe". Finally, it prints out this new, shorter, compound-safe list to a new text file. In this way it makes word lists "compound-safe".
+Next, it attempts to find the smallest number of words that need to be removed in order to make the given word list "compound-safe". Finally, it prints out this new, shorter, compound-safe list to a new text file. In this way it makes word lists "compound-safe" (or at least more safe-- see "Caveat" section below).
 
 ## How to use this tool to check a word list
 
@@ -59,18 +61,28 @@ However, in the 1Password list (labeled `word_lists/agile_words.txt` in this pro
 
 NOTE: 1Password's software, as far as I know, does NOT allow users to generate random passphrase without punctuation between words. Users _must_ choose to separate words with a period, hyphen, space, comma, or underscore. So these findings do NOT constitute a security issue with 1Password.
 
-## 1Password: An example and suggestion
+## An example
 
-The aim of the `find_words_to_remove` function is to remove the fewest number of these bad words to make the list compound-safe. When I ran it on the 1Password wordlist, I got 498 words back, which I dumped in to `scrap-lists-of-compound-words-and-components/words_to_remove_from_agile_list.txt`. 
+The aim of the tool is to  is to remove the fewest number of these bad words to make the list compound-safe (see the `find_words_to_remove` function). When I ran it on the 1Password wordlist, I got 498 words back, which I dumped in to `scrap-lists-of-compound-words-and-components/words_to_remove_from_agile_list.txt`. 
 
 Then the `make_clean_list` function removes these 498 words, giving us the list found in `word_lists/agile_words.txt.compound-safe`, a list of 17,830 words compound-safe words.
 
 Now, we should note that reducing the length of the list from 18,328 words to 17,830 has a cost. Given 1Password's current list of 18,328 words, when a user adds one of these words to their passphrase, they're adding about 14.162 bits of entropy to their passphrase. Using the shortened, compound-safe 17,830 word list, each randomly generated word would add about 14.122 bits to the passphrase. Of course, Agile Bits/1Password could replace the 498 words while keeping the list compound-safe.
+
+## A caveat
+
+We've explored "two-word compounding", where two words are actually one, but is there a possibility of a three-word compounding -- where three words become two? This tool does NOT currently check for this, so I can't actually guarantee that the lists outputted by the tool are completely compound-safe.
 
 ## To do
 
 - Use multiple threads to speed up the process. 
 - Make the command line text output during the process cleaner and more professional-looking.
 - Make the Rust code simpler and/or more idiomatic.
+- Explore the caveat listed above.
 
-A question: Given a word list that is not compound safe, calculate the probability of generating a non-safe pair in a passphrase. Part two: Given this probability, calculate the revised bits-per-word of the list.
+## Lingering questions
+
+1a. Given a word list that is not compound safe, calculate the probability of a compounding (generating a non-safe pair in a passphrase)? 
+1b. Given this probability, does it make sense, or is it useful, to calculate a revised bits-per-word measure of the list? (For the record I think this would be harmful, but I pose it here for inspiration.)
+
+
