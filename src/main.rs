@@ -11,11 +11,12 @@ fn main() {
     if args.len() == 3 {
         compound_safe_list_output = args[2].to_string();
     }
-    let (single_bad_words, double_bad_words) = split_and_search(
+    let (single_bad_words, double_bad_words, must_remove_words) = split_and_search(
         make_vec(word_list_to_check_filename),
         word_list_to_check_filename,
     );
-    let words_to_remove = find_words_to_remove(single_bad_words, double_bad_words);
+    let words_to_remove =
+        find_words_to_remove(single_bad_words, double_bad_words, must_remove_words);
 
     println!("Making compound-safe list");
     let clean_word_list = make_clean_list(words_to_remove, make_vec(word_list_to_check_filename));
@@ -24,6 +25,10 @@ fn main() {
     for i in &clean_word_list {
         writeln!(f, "{}", i).expect("Unable to write data to file");
     }
+
+    // let original_list_length = make_vec(word_list_to_check_filename).len();
+    // println!("You're original word list had {} words ({} bits per word).", make_vec(word_list_to_check_filename).len(), log(2.0, make_vec(word_list_to_check_filename).len()));
+    // println!("list had {} words ({} bits per word).", make_vec(word_list_to_check_filename).len(), log(2.0, make_vec(word_list_to_check_filename).len()));
 }
 
 fn make_vec(filename: &str) -> Vec<String> {
@@ -40,9 +45,10 @@ fn make_vec(filename: &str) -> Vec<String> {
 fn split_and_search(
     words: Vec<String>,
     word_list_to_check_filename: &str,
-) -> (Vec<String>, Vec<Vec<String>>) {
+) -> (Vec<String>, Vec<Vec<String>>, Vec<String>) {
     let mut single_bad_words: Vec<String> = [].to_vec();
     let mut double_bad_words: Vec<Vec<String>> = [].to_vec();
+    let mut must_remove_words: Vec<String> = [].to_vec();
     for mut word in words {
         println!("Starting search of {}", word);
         let mut second_half = "".to_string();
@@ -50,24 +56,34 @@ fn split_and_search(
             let length = &word.len();
             second_half = format!("{}{}", &word.split_off(length - 1), second_half);
             if search(&word, word_list_to_check_filename) {
+                // first check for compound-unsafe pairs
                 println!("I found {} as its own word. second half is {} and I should search for that now", word, second_half);
                 if search(&second_half, word_list_to_check_filename) {
                     single_bad_words.push(word.to_string());
                     single_bad_words.push(second_half.to_string());
                     double_bad_words.push(vec![word.to_string(), second_half.to_string()]);
                 }
-                // might want to put this logic first
-                // for word in &words {
-                //     if &second_half == word[0..&second_half.len()] {
-                //         remove first_half
-                //     }
-                // }
-                //
+                // Now check for problematic overlapping words
+                let overlap = &second_half; // boy
+                for word in make_vec(word_list_to_check_filename) {
+                    if overlap.len() < word.len() {
+                        let overhang = &word[overlap.len()..word.len()]; // hood
+                        if overlap == &word[0..overlap.len()].to_string()
+                            && search(overhang, word_list_to_check_filename)
+                        {
+                            println!(
+                                "word is {}, overlap is {}, and overhang is {}",
+                                word, overlap, overhang
+                            );
+                            // must_remove_words.push(word.to_string());
+                            must_remove_words.push(overhang.to_string());
+                        }
+                    }
+                }
             }
         }
     }
-    println!("Here are all the bad words I found {:?}", single_bad_words);
-    (single_bad_words, double_bad_words)
+    (single_bad_words, double_bad_words, must_remove_words)
 }
 
 fn search(target_word: &str, word_list_to_check_filename: &str) -> bool {
@@ -83,6 +99,7 @@ fn search(target_word: &str, word_list_to_check_filename: &str) -> bool {
 fn find_words_to_remove(
     single_bad_words: Vec<String>,
     double_bad_words: Vec<Vec<String>>,
+    must_remove_words: Vec<String>,
 ) -> Vec<String> {
     let mut words_to_remove: Vec<String> = [].to_vec();
     for word_vec in double_bad_words {
@@ -103,6 +120,10 @@ fn find_words_to_remove(
         }
     }
 
+    for word in must_remove_words {
+        words_to_remove.push(word.to_string());
+    }
+
     words_to_remove.sort();
     words_to_remove.dedup();
     return words_to_remove;
@@ -121,5 +142,11 @@ fn make_clean_list(words_to_remove: Vec<String>, original_list: Vec<String>) -> 
             clean_words.push(original_word);
         }
     }
+    clean_words.sort();
     clean_words
+}
+
+fn log_base(base: u64, n: f64) -> f64 {
+    let base_as_float: f64 = base as f64;
+    return (n.ln() / base_as_float.ln()) as f64;
 }
