@@ -21,7 +21,7 @@ fn main() {
     println!("Making compound-safe list");
     let clean_word_list = make_clean_list(words_to_remove, make_vec(word_list_to_check_filename));
 
-    let mut f = File::create(compound_safe_list_output).expect("Unable to create file");
+    let mut f = File::create(&compound_safe_list_output).expect("Unable to create file");
     for i in &clean_word_list {
         writeln!(f, "{}", i).expect("Unable to write data to file");
     }
@@ -41,9 +41,10 @@ fn main() {
         println!("I didn't find any problematic words. Your inputted word list appears to be compound-safe as is!");
     } else {
         println!(
-            "The compound-safe list I made has {} words ({} bits per word).",
+            "The compound-safe list I made has {} words ({} bits per word). It's located at '{}'",
             clean_list_length,
-            log_base(2, clean_list_length)
+            log_base(2, clean_list_length),
+            &compound_safe_list_output
         );
     }
 }
