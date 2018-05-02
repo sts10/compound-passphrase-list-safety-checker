@@ -4,26 +4,22 @@ use std::io::Write;
 use std::fs::File;
 
 fn main() {
-    // let (single_bad_words, double_bad_words) = split_and_search(make_vec("bad_word_test.txt"));
-    // let (single_bad_words, double_bad_words) = split_and_search(make_vec("agile_words.txt"));
-    let (single_bad_words, double_bad_words) = split_and_search(make_vec(
-        "compound-safe_word_lists/agile_words_compound-safe.txt",
-    ));
+    let (single_bad_words, double_bad_words) =
+        split_and_search(make_vec("word_lists_to_check/agile_words.txt"));
+    // let (single_bad_words, double_bad_words) = split_and_search(make_vec("word_lists_to_check/bad_word_test.txt"));
     let words_to_remove = find_words_to_remove(single_bad_words, double_bad_words);
 
     println!("Making compound-safe list");
-    // let clean_word_list = make_clean_list(words_to_remove, make_vec("bad_word_test.txt"));
     let clean_word_list = make_clean_list(
         words_to_remove,
-        make_vec("compound-safe_word_lists/agile_words_compound-safe.txt"),
+        make_vec("word_lists_to_check/agile_words.txt"),
     );
+    // let clean_word_list = make_clean_list(words_to_remove, make_vec("words_to_remove/bad_word_test.txt"));
 
-    let mut f = File::create(
-        "compound-safe_word_lists/agile_word_compound-words_checked--this-should-be-empty.txt",
-    ).expect("Unable to create file");
+    let mut f = File::create("compound-safe_word_lists/agile_word_compound-safe.txt")
+        .expect("Unable to create file");
     for i in &clean_word_list {
-        // f.write(i).expect("Unable to write data");
-        writeln!(f, "{}", i);
+        writeln!(f, "{}", i).expect("Unable to write data to file");
     }
 }
 
@@ -62,8 +58,7 @@ fn split_and_search(words: Vec<String>) -> (Vec<String>, Vec<Vec<String>>) {
 }
 
 fn search(target_word: &str) -> bool {
-    // let words = make_vec("bad_word_test.txt");
-    let words = make_vec("compound-safe_word_lists/agile_words_compound-safe.txt");
+    let words = make_vec("word_lists_to_check/agile_words.txt");
     for word in words {
         if target_word == word {
             return true;
