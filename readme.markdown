@@ -6,7 +6,7 @@ Initially I wanted to make sure that no two words in [the EFF's long diceware wo
 
 **Disclosure**: I am not a professional researcher or statistician, and frankly I'm pretty fuzzy on some of this math. This code/theory/explanation could be very wrong (but hopefully not harmful?). If you think it could be wrong or harmful, please leave an issue! 
 
-Further disclosure: see "Caveat" section below.
+Further disclosure: see "Known issue" and "Caveat" sections below.
 
 ## What is "compound-safety"? 
 
@@ -22,7 +22,7 @@ Let's say we're using the word list described above, which has "under", "dog" an
 
 **It's important to note** that if the passphrase has any punctuation (for example, a period, comma, hyphen, space) between words, this issue goes away completely. "cruelty frail under dog cycling apostle" is indeed a six-word passphrase, and an attacker who tries "underdog" as the third word does not get a match.
 
-To summarize: When creating passphrases without punctuation between the words with a word list that is NOT compound-safe, there's a small risk that users will put two words together that form another word on this list. When this happens (which we might call "a compounding"), they lose one word's worth of entropy from their password. However if they used a compound-safe list, they can safely not use punctuation between words, since compounding cannot occur (or at least, are less likely to occur -- see "Caveat" section below).
+To summarize: When creating passphrases without punctuation between the words with a word list that is NOT compound-safe, there's a small risk that users will put two words together that form another word on this list. When this happens (which we might call "a compounding"), they lose one word's worth of entropy from their password. However if they used a compound-safe list, they can safely not use punctuation between words, since compounding cannot occur (or at least, are less likely to occur -- see "Known issue" and "Caveat" sections below).
 
 Again, it's super important to understand that putting a hyphen or space between the words ("cruelty frail under dog cycling apostle") eliminates this problem completely.
 
@@ -47,7 +47,7 @@ boyhood
 hood
 ``` 
 
-within the 2-phrase guess space we'll have "paperboyhood" appear twice: once as [paperboy][hood] and again as [paper][boyhood]. Unfortunately I don't think the current version of this tool would do anything about this situation.
+within the 2-phrase guess space we'll have "paperboyhood" appear twice: once as [paperboy][hood] and again as [paper][boyhood]. Unfortunately the current version of this tool would NOT do anything to fix this list.
 
 Note: A Fediverse user brought this situation to my attention.
 
@@ -55,7 +55,7 @@ Note: A Fediverse user brought this situation to my attention.
 
 This tool takes a word list (as a text file) as an input. It then searches the given list for words that can be combined to make other words on the list.
 
-Next, it attempts to find the smallest number of words that need to be removed in order to make the given word list "compound-safe". Finally, it prints out this new, shorter, compound-safe list to a new text file. In this way it makes word lists "compound-safe" (or at least more safe-- see "Caveat" section below).
+Next, it attempts to find the smallest number of words that need to be removed in order to make the given word list "compound-safe". Finally, it prints out this new, shorter, compound-safe list to a new text file. In this way it makes word lists "compound-safe" (or at least more safe-- see "Known issue" and "Caveat" sections below).
 
 ## How to use this tool to check a word list
 
