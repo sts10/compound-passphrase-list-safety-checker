@@ -8,17 +8,17 @@ Initially I wanted to make sure that no two words in [the EFF's long diceware wo
 
 I made up the term. Here's what I mean by it: 
 
-A passphrase list is "compound-safe" if it does NOT contain any pairs of words that can be combined to make another word on the list. 
+A passphrase word list is "compound-safe" if it does NOT contain any pairs of words that can be combined to make another word on the list. 
 
-For example, if a word list included "under", "dog", and "underdog" as three separate words, it would NOT be compound-safe, since "under" and "dog" can be combined to make the word "underdog". 
+For example, if a word list included "under", "dog", and "underdog" as three separate words, it would NOT be compound-safe, since "under" and "dog" can be combined to make the word "underdog".
 
-## Why is this attribute of a passphrase list notable? 
+## Why is this attribute of a passphrase word list notable? 
 
 Let's say we're using the word list described above, which has "under", "dog" and "underdog" in it. A user might randomly get "under" and "dog" in a row, for example in the six-word passphrase "crueltyfrailunderdogcyclingapostle". The user might assume they had six words worth of entropy. But really, an attacker brute forcing their way through five-word passphrases would eventually crack the passphrase.
 
 It's important to note that if the passphrase has any punctuation (for example, a period, comma, hyphen, space) between words, this issue goes away completely.  "cruelty frail under dog cycling apostle" is indeed a six-word passphrase, and an attacker who tries "underdog" as the third word does not get a match.
 
-To summarize: In creating passphrases without spaces between the words, there's a small risk that users will put two words together that form another word on this list. When this happens, they lose one word's worth of entropy from their password. 
+To summarize: When creating passphrases without punctuation between the words with a word list that is NOT compound-safe, there's a small risk that users will put two words together that form another word on this list. When this happens, they lose one word's worth of entropy from their password. However if they used a compound-safe list, they can safely not use punctuation between words.
 
 Again, it's super important to understand that putting a hyphen or space between the words ("cruelty frail under dog cycling apostle") eliminates this problem completely.
 
