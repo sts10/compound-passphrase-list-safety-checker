@@ -40,7 +40,7 @@ What if we generated a passphrase and, at some point in it, got "paperboyhood"? 
 
 Now I _think_ this tool would remove either the word "paper" or "boy" in this situation, due to that being a normal compounding, neuatralizing this Venn diagram problem as well. But I'm not sure, so that's something to look into. 
 
-Fediverse user varx brought [this situation to my attention](https://i.write.codethat.sucks/@varx/99957388754676479).
+Note: A Fediverse user brought this situation to my attention.
 
 ## What this tool does
 
