@@ -1,6 +1,6 @@
 # Compound Passphrase List Safety Checker
 
-This Rust scripts checks whether a given passphrase word list (such as a diceware word list) has any words that can be combined to make another word on the list.
+This Rust command line tool checks whether a given passphrase word list (such as a diceware word list) has any words that can be combined to make another word on the list.
 
 Initially I wanted to make sure that no two words in [the EFF's long diceware word list](https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases) could be combined to make another word on the list. I later checked the list that 1Password uses.
 
@@ -24,13 +24,13 @@ Again, it's super important to understand that putting a hyphen or space between
 
 I heard of this potential issue in [this YouTube video](https://youtu.be/Pe_3cFuSw1E?t=8m36s). 
 
-## What this script does
+## What this tool does
 
-This Rust script takes a word list (as a text file) as an input. It then searches the given list for words that can be combined to make other words on the list.
+This Rust tool takes a word list (as a text file) as an input. It then searches the given list for words that can be combined to make other words on the list.
 
 Next, it attempts to find the smallest number of words that need to be removed in order to make the given word list "compound-safe". Finally, it prints out this new, shorter, compound-safe list to a new text file. In this way it makes word lists "compound-safe".
 
-## How to use this script to check a word list
+## How to use this tool to check a word list
 
 First you'll need to [install Rust](https://www.rust-lang.org/en-US/install.html). Make sure running the command `cargo --version` returns something that starts with something like `cargo 0.26.0`. 
 
@@ -65,7 +65,9 @@ Then the `make_clean_list` function removes these 498 words, giving us the list 
 
 Now, we should note that reducing the length of the list from 18,328 words to 17,830 has a cost. Given 1Password's current list of 18,328 words, when a user adds one of these words to their passphrase, they're adding about 14.162 bits of entropy to their passphrase. Using the shortened, compound-safe 17,830 word list, each randomly generated word would add about 14.122 bits to the passphrase. Of course, Agile Bits/1Password could replace the 498 words while keeping the list compound-safe.
 
-## Still to do 
+## To do
 
 - Use multiple threads to speed up the process. 
 - Make the command line text output during the process cleaner and more professional-looking.
+
+A question: Given a word list that is not compound safe, calculate the probability of generating a non-safe pair in a passphrase. Part two: Given this probability, calculate the revised bits-per-word of the list.
