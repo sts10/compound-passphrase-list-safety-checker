@@ -4,20 +4,18 @@ use std::io::Write;
 use std::fs::File;
 
 fn main() {
-    let (single_bad_words, double_bad_words) =
-        split_and_search(make_vec("word_lists_to_check/agile_words.txt"));
-    // let (single_bad_words, double_bad_words) = split_and_search(make_vec("word_lists_to_check/bad_word_test.txt"));
+    let word_list_to_check_filename = "word_lists_to_check/bad_word_test.txt";
+    let compound_safe_list_output = "compound-safe_word_lists/bad_word_test_compound-safe.txt";
+    let (single_bad_words, double_bad_words) = split_and_search(
+        make_vec(word_list_to_check_filename),
+        word_list_to_check_filename,
+    );
     let words_to_remove = find_words_to_remove(single_bad_words, double_bad_words);
 
     println!("Making compound-safe list");
-    let clean_word_list = make_clean_list(
-        words_to_remove,
-        make_vec("word_lists_to_check/agile_words.txt"),
-    );
-    // let clean_word_list = make_clean_list(words_to_remove, make_vec("words_to_remove/bad_word_test.txt"));
+    let clean_word_list = make_clean_list(words_to_remove, make_vec(word_list_to_check_filename));
 
-    let mut f = File::create("compound-safe_word_lists/agile_word_compound-safe.txt")
-        .expect("Unable to create file");
+    let mut f = File::create(compound_safe_list_output).expect("Unable to create file");
     for i in &clean_word_list {
         writeln!(f, "{}", i).expect("Unable to write data to file");
     }
@@ -34,7 +32,10 @@ fn make_vec(filename: &str) -> Vec<String> {
     return word_list;
 }
 
-fn split_and_search(words: Vec<String>) -> (Vec<String>, Vec<Vec<String>>) {
+fn split_and_search(
+    words: Vec<String>,
+    word_list_to_check_filename: &str,
+) -> (Vec<String>, Vec<Vec<String>>) {
     let mut single_bad_words: Vec<String> = [].to_vec();
     let mut double_bad_words: Vec<Vec<String>> = [].to_vec();
     for mut word in words {
@@ -43,9 +44,9 @@ fn split_and_search(words: Vec<String>) -> (Vec<String>, Vec<Vec<String>>) {
         for _i in 0..word.len() {
             let length = &word.len();
             second_half = format!("{}{}", &word.split_off(length - 1), second_half);
-            if search(&word) {
+            if search(&word, word_list_to_check_filename) {
                 println!("I found {} as its own word. second half is {} and I should search for that now", word, second_half);
-                if search(&second_half) {
+                if search(&second_half, word_list_to_check_filename) {
                     single_bad_words.push(word.to_string());
                     single_bad_words.push(second_half.to_string());
                     double_bad_words.push(vec![word.to_string(), second_half.to_string()]);
@@ -57,8 +58,8 @@ fn split_and_search(words: Vec<String>) -> (Vec<String>, Vec<Vec<String>>) {
     (single_bad_words, double_bad_words)
 }
 
-fn search(target_word: &str) -> bool {
-    let words = make_vec("word_lists_to_check/agile_words.txt");
+fn search(target_word: &str, word_list_to_check_filename: &str) -> bool {
+    let words = make_vec(&word_list_to_check_filename);
     for word in words {
         if target_word == word {
             return true;
