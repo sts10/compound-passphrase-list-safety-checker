@@ -42,7 +42,7 @@ NOTE: 1Password's software, as far as I know, does NOT allow users to generate r
 
 The aim of the `find_words_to_remove` function is to remove the fewest number of these bad words to make the list compound-safe. When I ran it on the 1Password wordlist, I got 498 words back, which I dumped in to `findings/words_to_remove_from_agile_list.txt`. 
 
-Then the `make_clean_list` function removes these 498 words, giving us the list found in `cleaned_word_lists/agile_words_cleaned.txt`, a list of 17,830 words compound-safe words.
+Then the `make_clean_list` function removes these 498 words, giving us the list found in `compound-safe_word_lists/agile_words_compound-safe.txt`, a list of 17,830 words compound-safe words.
 
 Now, we should note that reducing the length of the list from 18,328 words to 17,830 has a cost. Given 1Password's current list of 18,328 words, when a user adds one of these words to their passphrase, they're adding about 14.162 bits of entropy to their passphrase. Using the shortened, compound-safe 17,830 word list, each randomly generated word would add about 14.122 bits to the passphrase. Of course, Agile Bits/1Password could replace the 498 words while keeping the list compound-safe.
 
