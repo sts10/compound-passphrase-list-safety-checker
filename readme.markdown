@@ -77,7 +77,11 @@ cargo run <wordlist-to-check.txt> <output.txt>
 
 I found the [EFF long word list](https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases) to be compound-safe (which is really cool!). EFF notes that in making the line "We also ensured that no word is an exact prefix of any other word." I'm not sure if that condition is enough on its own to ensure "compound-safety" as I've defined it here.
 
-In contrast, in the 1Password list (labeled `word_lists/agile_words.txt` in this project, copied from [this 1Password challenge](https://github.com/agilebits/crackme/blob/master/doc/AgileWords.txt)), I found a lot of problematic overlaps (I'm working on getting a count, but it might be too many to make the resulting compound-safe list, as outputted by this tool, usable). As for compoundings: I found 2,661 compound words (see: `scrap-lists-of-compound-words-and-components/agile_double_bad_words.txt`), made up of 1,511 unique bad single words (see: `scrap-lists-of-compound-words-and-components/agile_single_bad_words.txt`). 
+In contrast, in the 1Password list (labeled `word_lists/agile_words.txt` in this project, copied from [this 1Password challenge](https://github.com/agilebits/crackme/blob/master/doc/AgileWords.txt)), 
+
+Re: compoundings: I found 2,661 compound words (see: `scrap-lists-of-compound-words-and-components/agile_double_bad_words.txt`), made up of 1,511 unique bad single words (see: `scrap-lists-of-compound-words-and-components/agile_single_bad_words.txt`). The tool was able to remove only 498 words to make compoundings impossible.
+
+When adding the words removed to prevent problematic overlaps, the tool ended up removing 2,225 words from the Agile list. The compound-safe version of the Agile list has 16,103 words and a copy of the list is located at `word_lists/agile_words-compound-safe.txt`.
 
 NOTE: 1Password's software, as far as I know, does NOT allow users to generate random passphrase without punctuation between words. Users _must_ choose to separate words with a period, hyphen, space, comma, or underscore. So these findings do NOT constitute a security issue with 1Password.
 
