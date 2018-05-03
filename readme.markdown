@@ -61,7 +61,7 @@ First you'll need to [install Rust](https://www.rust-lang.org/en-US/install.html
 Next, clone down this repo. To run the script, cd into the repo's directory and run:
 
 ```
-cargo run <wordlist.txt>
+cargo run --release <wordlist.txt>
 ```
 
 This will create a file named `wordlist.txt.compound-safe` that is the compound-safe list of your word list (obviously may be shorter). 
@@ -69,7 +69,7 @@ This will create a file named `wordlist.txt.compound-safe` that is the compound-
 You can also specify a specific output file location:
 
 ```
-cargo run <wordlist-to-check.txt> <output.txt>
+cargo run --release <wordlist-to-check.txt> <output.txt>
 ```
 
 
