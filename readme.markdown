@@ -24,6 +24,8 @@ I heard of this potential issue in [this YouTube video](https://youtu.be/Pe_3cFu
 
 **An example of condition #2**: Let's say a word list included "paper", "paperboy", "boyhood", and "hood". A user not using spaces between words might get the following two words next to each other in a passphrase: "paperboyhood", which would be able to be brute-force guessed as both `[paperboy][hood]` and `[paper][boyhood]`. Therefore this word list would NOT be compound-safe. (I call this a "problematic overlap".)
 
+Another way to think about problematic overlaps: if, for every pair of words, you mash them together, there must be only ONE way to split them apart and make two words on the list.
+
 ## Why is the compound-safety of a passphrase word list notable? 
 
 Let's say we're using the word list described above, which has "under", "dog" and "underdog" in it. A user might randomly get "under" and "dog" in a row, for example in the six-word passphrase "crueltyfrailunderdogcyclingapostle". The user might assume they had six words worth of entropy. But really, an attacker brute forcing their way through five-word passphrases would eventually crack the passphrase. We can call this event "a compounding".
