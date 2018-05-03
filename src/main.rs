@@ -68,33 +68,60 @@ fn split_and_search(
     let mut double_bad_words: Vec<Vec<String>> = [].to_vec();
     let mut must_remove_words: Vec<String> = [].to_vec();
     for mut word in words {
-        println!("Starting search of {}", word);
-        let mut second_half = "".to_string();
-        for _i in 0..word.len() {
-            let length = &word.len();
-            second_half = format!("{}{}", &word.split_off(length - 1), second_half);
-            if search(&word, word_list_to_check_filename) {
-                // first check for compound-unsafe pairs
-                println!("I found {} as its own word. second half is {} and I should search for that now", word, second_half);
-                if search(&second_half, word_list_to_check_filename) {
-                    single_bad_words.push(word.to_string());
-                    single_bad_words.push(second_half.to_string());
-                    double_bad_words.push(vec![word.to_string(), second_half.to_string()]);
-                }
-                // Now check for problematic overlapping words
-                let overlap = &second_half; // boy
-                for word in make_vec(word_list_to_check_filename) {
-                    if overlap.len() < word.len() {
-                        let overhang = &word[overlap.len()..word.len()]; // hood
-                        if overlap == &word[0..overlap.len()].to_string()
-                            && search(overhang, word_list_to_check_filename)
-                        {
-                            println!(
-                                "word is {}, overlap is {}, and overhang is {}",
-                                word, overlap, overhang
-                            );
-                            // must_remove_words.push(word.to_string());
-                            must_remove_words.push(overhang.to_string());
+        // I don't think this is going to matter until pretty far into a list
+        let mut skip = false;
+        for word_for_removal in &must_remove_words {
+            if word == word_for_removal.to_string() {
+                println!("skipping {}", word);
+                skip = true;
+            }
+        }
+        if skip == false {
+            println!("Starting search of {}", word);
+            let mut second_half = "".to_string();
+            for _i in 0..word.len() {
+                let length = &word.len();
+                second_half = format!("{}{}", &word.split_off(length - 1), second_half);
+                if search(&word, word_list_to_check_filename) {
+                    // first check for compound-unsafe pairs
+                    println!("I found {} as its own word. second half is {} and I should search for that now", word, second_half);
+                    if search(&second_half, word_list_to_check_filename) {
+                        single_bad_words.push(word.to_string());
+                        single_bad_words.push(second_half.to_string());
+                        double_bad_words.push(vec![word.to_string(), second_half.to_string()]);
+                    }
+                    // Now check for problematic overlapping words
+                    let overlap = &second_half; // boy
+                    let left_overhang = &word;
+                    let left_word = format!("{}{}", left_overhang, overlap);
+                    for right_word in make_vec(word_list_to_check_filename) {
+                        if overlap.len() < right_word.len() {
+                            let right_overhang = &right_word[overlap.len()..right_word.len()]; // hood
+                            if overlap == &right_word[0..overlap.len()].to_string()
+                                && search(right_overhang, word_list_to_check_filename)
+                            {
+                                // println!("left_word is {}, right_word is {}", left_word, right_word);
+                                // println!(
+                                //     "left_overhang is {}, overlap is {}, and right_overhang is {}",
+                                //     left_overhang, overlap, right_overhang
+                                // );
+                                println!(
+                                    "So G1 is [{}{}][{}]",
+                                    left_overhang, overlap, right_overhang
+                                );
+                                println!(
+                                    "So G2 is [{}][{}{}]",
+                                    left_overhang, overlap, right_overhang
+                                );
+                                // must_remove_words.push(word.to_string());
+                                must_remove_words.push(right_overhang.to_string());
+                                must_remove_words.sort();
+                                must_remove_words.dedup();
+                                println!(
+                                    "size of must_remove_words is {}",
+                                    must_remove_words.len()
+                                );
+                            }
                         }
                     }
                 }
