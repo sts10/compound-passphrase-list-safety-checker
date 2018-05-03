@@ -1,12 +1,12 @@
 # Compound Passphrase List Safety Checker
 
-This command line tool checks whether a given passphrase word list (such as a diceware word list) has any words that can be combined to make another word on the list. It's written in Rust, which I am new to, so please use this with caution.
+This command line tool checks whether a given passphrase word list (such as a diceware word list) has any words that can be combined to make another word on the list. It's written in Rust, which I am new to. This is very much **a work in progress**, so I'd heavily caution against trusting it for real results. I forked off an earlier version of [this project when it was in a simpler state](https://github.com/sts10/compound-passphrase-list-safety-checker-simple) if you want to check that out.
 
 Initially I wanted to make sure that no two words in [the EFF's long diceware word list](https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases) could be combined to make another word on the list. I later checked other lists.
 
 **Disclosure**: I am not a professional researcher or statistician, and frankly I'm pretty fuzzy on some of this math. This code/theory/explanation could be very wrong (but hopefully not harmful?). If you think it could be wrong or harmful, please leave an issue! 
 
-Further disclosure: see "Known issue" and "Caveat" sections below.
+Further disclosure: see "Caveat" section below.
 
 ## What is "compound-safety"? 
 
@@ -14,7 +14,7 @@ I made up the term. Here's what I mean by it: A passphrase word list is "compoun
 
 1. does NOT contain any pairs of words that can be combined to make another word on the list. (We'll call this a "compounding")
 
-2. does Not contain any pairs of words that can be combined such that they can be guessed in two distinct ways (We'll call this a "problematic overlap").
+2. does NOT contain any pairs of words that can be combined such that they can be guessed in two distinct ways within the same word-length space (We'll call this a "problematic overlap").
 
 ## Brief examples of each of these conditions being violated
 
@@ -73,19 +73,11 @@ cargo run <wordlist-to-check.txt> <output.txt>
 
 ## Some initial findings
 
-I found the [EFF long word list](https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases) to be compound-safe (which is really cool!).
+I found the [EFF long word list](https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases) to be compound-safe (which is really cool!). EFF notes that in making the line "We also ensured that no word is an exact prefix of any other word." I'm not sure if that condition is enough on its own to ensure "compound-safety" as I've defined it here.
 
-However, in the 1Password list (labeled `word_lists/agile_words.txt` in this project, copied from [this 1Password challenge](https://github.com/agilebits/crackme/blob/master/doc/AgileWords.txt)), I found 2,661 compound words (see: `scrap-lists-of-compound-words-and-components/agile_double_bad_words.txt`), made up of 1,511 unique bad single words (see: `scrap-lists-of-compound-words-and-components/agile_single_bad_words.txt`). 
+In contrast, in the 1Password list (labeled `word_lists/agile_words.txt` in this project, copied from [this 1Password challenge](https://github.com/agilebits/crackme/blob/master/doc/AgileWords.txt)), I found a lot of problematic overlaps (I'm working on getting a count, but it might be too many to make the resulting compound-safe list, as outputted by this tool, usable). As for compoundings: I found 2,661 compound words (see: `scrap-lists-of-compound-words-and-components/agile_double_bad_words.txt`), made up of 1,511 unique bad single words (see: `scrap-lists-of-compound-words-and-components/agile_single_bad_words.txt`). 
 
 NOTE: 1Password's software, as far as I know, does NOT allow users to generate random passphrase without punctuation between words. Users _must_ choose to separate words with a period, hyphen, space, comma, or underscore. So these findings do NOT constitute a security issue with 1Password.
-
-## An example
-
-The aim of the tool is to  is to remove the fewest number of these bad words to make the list compound-safe (see the `find_words_to_remove` function). When I ran it on the 1Password wordlist, I got 498 words back, which I dumped in to `scrap-lists-of-compound-words-and-components/words_to_remove_from_agile_list.txt`. 
-
-Then the `make_clean_list` function removes these 498 words, giving us the list found in `word_lists/agile_words.txt.compound-safe`, a list of 17,830 words compound-safe words.
-
-Now, we should note that reducing the length of the list from 18,328 words to 17,830 has a cost. Given 1Password's current list of 18,328 words, when a user adds one of these words to their passphrase, they're adding about 14.162 bits of entropy to their passphrase. Using the shortened, compound-safe 17,830 word list, each randomly generated word would add about 14.122 bits to the passphrase. Of course, Agile Bits/1Password could replace the 498 words while keeping the list compound-safe.
 
 ## Caveats / Known issues
 
@@ -98,7 +90,6 @@ Also, currently this script runs really slowly on lists with a lot of overlaps (
 - Use multiple threads to speed up the process. 
 - Make the command line text output during the process cleaner and more professional-looking.
 - Make the Rust code simpler and/or more idiomatic.
-- Explore the caveat listed above.
 
 ## Lingering questions
 
