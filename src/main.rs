@@ -106,11 +106,11 @@ fn split_and_search(
                                 //     left_overhang, overlap, right_overhang
                                 // );
                                 println!(
-                                    "So G1 is [{}{}][{}]",
+                                    "Guess #1 is [{}{}][{}]",
                                     left_overhang, overlap, right_overhang
                                 );
                                 println!(
-                                    "So G2 is [{}][{}{}]",
+                                    "Guess #2 is [{}][{}{}]",
                                     left_overhang, overlap, right_overhang
                                 );
                                 // must_remove_words.push(word.to_string());
