@@ -2,6 +2,8 @@
 
 This command line tool checks whether a given passphrase word list (such as a diceware word list) has any words that can be combined to make another word on the list. It's written in Rust, which I am new to. This is very much **a work in progress**, so I'd heavily caution against trusting it for real results. I forked off an earlier version of [this project when it was in a simpler state](https://github.com/sts10/compound-passphrase-list-safety-checker-simple) if you want to check that out.
 
+I've now written [a blog post](https://sts10.github.io/2018/05/05/compound-passphrase-list-safety-checker.html) about this tool. 
+
 Initially I wanted to make sure that no two words in [the EFF's long diceware word list](https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases) could be combined to make another word on the list. I later checked other lists.
 
 **Disclosure**: I am not a professional researcher or statistician, and frankly I'm pretty fuzzy on some of this math. This code/theory/explanation could be very wrong (but hopefully not harmful?). If you think it could be wrong or harmful, please leave an issue! 
@@ -81,7 +83,9 @@ In contrast, in the 1Password list (labeled `word_lists/agile_words.txt` in this
 
 Re: compoundings: I found 2,661 compound words (see: `scrap-lists-of-compound-words-and-components/agile_double_bad_words.txt`), made up of 1,511 unique bad single words (see: `scrap-lists-of-compound-words-and-components/agile_single_bad_words.txt`). The tool was able to remove only 498 words to make compoundings impossible.
 
-When adding the words removed to prevent problematic overlaps, the tool ended up removing 2,225 words from the Agile list. The compound-safe version of the Agile list has 16,103 words and a copy of the list is located at `word_lists/agile_words-compound-safe.txt`.
+The tool also found 2,111 problematic overlaps in the 1Password list, and marked 2,111 words for removal.
+
+All told, the tool removed 2,225 unique words from the 1Password list to make a new, compound-safe list. The compound-safe version of the Agile list has 16,103 words and a copy of the list is located at `word_lists/agile_words-compound-safe.txt`. With 16,103, each word from this list would add about 13.98 bits of entropy to a passphrase, compared to the original 1Password list, which adds about 14.2 bits.
 
 NOTE: 1Password's software, as far as I know, does NOT allow users to generate random passphrase without punctuation between words. Users _must_ choose to separate words with a period, hyphen, space, comma, or underscore. So these findings do NOT constitute a security issue with 1Password.
 
