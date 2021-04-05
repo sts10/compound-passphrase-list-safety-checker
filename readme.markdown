@@ -2,13 +2,17 @@
 
 This command line tool checks whether a given passphrase word list (such as a diceware word list) has any words that can be combined to make another word on the list. It's written in Rust, which I am new to. This is very much **a work in progress**, so I'd heavily caution against trusting it for real results. I forked off an earlier version of [this project when it was in a simpler state](https://github.com/sts10/compound-passphrase-list-safety-checker-simple) if you want to check that out.
 
-I've now written [a blog post](https://sts10.github.io/2018/05/05/compound-passphrase-list-safety-checker.html) about this tool. 
+I also have written [a blog post](https://sts10.github.io/2018/05/05/compound-passphrase-list-safety-checker.html) about this tool. 
 
-Initially I wanted to make sure that no two words in [the EFF's long diceware word list](https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases) could be combined to make another word on the list. I later checked other lists.
+Initially I wanted to make sure that no two words in [the EFF's long diceware word list](https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases) could be combined to make another word on the list. The tool here is generalized to check any such word list.
 
-**Disclosure**: I am not a professional researcher or statistician, and frankly I'm pretty fuzzy on some of this math. This code/theory/explanation could be very wrong (but hopefully not harmful?). If you think it could be wrong or harmful, please leave an issue! 
+**Disclosure**: I am not a professional researcher or statistician, and frankly I'm pretty fuzzy on some of this math. This code/theory/explanation could be very wrong (but hopefully not harmful?). If you think it could be wrong or harmful, please create an issue! 
 
-Further disclosure: see "Caveat" section below.
+Further disclosures: see "Caveat" section below.
+
+## Related projects by me that may interest you
+
+[Tidy](https://github.com/sts10/tidy) is a Rust command-line tool that cleans and combines word lists. Notably, it can also optionally remove ["prefix" words](https://en.wikipedia.org/wiki/Prefix_code). It's my understanding that a word list that does not have any prefix words is "compound-safe", as I define that term below. And while removing all prefix words may remove more words than strictly necessary to guarantee compound-safety, it's a simpler concept to understand and check for, and thus likely better for actually vetting a word list for use without word separators than this project.
 
 ## What is "compound-safety"? 
 
@@ -24,7 +28,7 @@ I made up the term. Here's what I mean by it: A passphrase word list is "compoun
 
 I heard of this potential issue in [this YouTube video](https://youtu.be/Pe_3cFuSw1E?t=8m36s). 
 
-**An example of condition #2**: Let's say a word list included "paper", "paperboy", "boyhood", and "hood". A user not using spaces between words might get the following two words next to each other in a passphrase: "paperboyhood", which would be able to be brute-force guessed as both `[paperboy][hood]` and `[paper][boyhood]`. Therefore this word list would NOT be compound-safe. (I call this a "problematic overlap".)
+**An example of condition #2**: Let's say a word list included "paper", "paperboy", "boyhood", and "hood". A user not using punctuation between words might get the following two words next to each other in a passphrase: "paperboyhood", which would be able to be brute-force guessed as both `[paperboy][hood]` and `[paper][boyhood]`. Therefore this word list would NOT be compound-safe. (I call this a "problematic overlap".)
 
 Another way to think about problematic overlaps: if, for every pair of words, you mash them together, there must be only ONE way to split them apart and make two words on the list.
 
@@ -77,7 +81,7 @@ cargo run --release <wordlist-to-check.txt> <output.txt>
 
 ## Some initial findings
 
-I found the [EFF long word list](https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases) to be compound-safe (which is really cool!). EFF notes that in making the line "We also ensured that no word is an exact prefix of any other word." I'm not sure if that condition is enough on its own to ensure "compound-safety" as I've defined it here.
+I found the [EFF long word list](https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases) to be compound-safe (which is really cool!). EFF notes that in making the line "We also ensured that no word is an exact prefix of any other word." 
 
 In contrast, in the 1Password list (labeled `word_lists/agile_words.txt` in this project, copied from [this 1Password challenge](https://github.com/agilebits/crackme/blob/master/doc/AgileWords.txt)), 
 
@@ -91,7 +95,7 @@ NOTE: 1Password's software, as far as I know, does NOT allow users to generate r
 
 ## Caveats / Known issues
 
-We've explored "two-word compounding", where two words are actually one, but is there a possibility of a three-word compounding -- where three words become two? This tool does NOT currently check for this, so I can't actually guarantee that the lists outputted by the tool are completely compound-safe.
+We've explored "two-word compounding", where two words are actually one, but is there a possibility of a three-word compounding -- where three words become two? This tool does NOT currently check for this, so I can't actually guarantee that the lists outputted by the tool are completely compound-safe. This another reason to more simply remove all prefix words, as the EFF word list creator apparently did.
 
 Also, currently this script runs really slowly on lists with a lot of overlaps (problematic or not). Using threads in Rust would help, but I'm sure there's a more efficient way to check for problematic overhangs.
 
@@ -103,7 +107,8 @@ Also, currently this script runs really slowly on lists with a lot of overlaps (
 
 ## Lingering questions
 
-1a. Given a word list that is not compound-safe, calculate the probability of a compounding (generating a non-safe pair in a passphrase)? 
-1b. Given this probability, does it make sense, or is it useful, to calculate a revised bits-per-word measure of the list? (For the record I think this would be harmful, but I pose it here for inspiration.)
+1. Given a word list that is not compound-safe, calculate the probability of a compounding (generating a non-safe pair in a passphrase)? 
+2. Given this probability, does it make sense, or is it useful, to calculate a revised bits-per-word measure of the list? (For the record I think this would be harmful, but I pose it here for inspiration.)
+3. If a word list has no prefix words, is it definitely compound-safe? Assuming yes.
 
 
