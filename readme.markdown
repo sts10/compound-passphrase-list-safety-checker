@@ -6,6 +6,10 @@ I also have written [a blog post](https://sts10.github.io/2018/05/05/compound-pa
 
 Initially I wanted to make sure that no two words in [the EFF's long diceware word list](https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases) could be combined to make another word on the list. The tool here is generalized to check any such word list.
 
+## Newer version
+
+[A newer version of this program is available](https://github.com/sts10/csafe). Informally, it is much slower than this program, but it should preserve more words when creating a compound-safe version of the inputted word list.
+
 ## Disclosures
 
 I am not a professional researcher or statistician, and frankly I'm pretty fuzzy on some of this math. This code/theory/explanation could be very wrong (but hopefully not harmful?). If you think it could be wrong or harmful, please create an issue! 
