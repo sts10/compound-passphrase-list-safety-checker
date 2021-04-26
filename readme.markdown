@@ -8,7 +8,7 @@ Initially I wanted to make sure that no two words in [the EFF's long diceware wo
 
 ## Newer version
 
-[A newer version of this program is available](https://github.com/sts10/csafe). Informally, it is much **slower** than this program, but it should **preserve more words** when creating a compound-safe version of the inputted word list.
+[A newer version of this program is available](https://github.com/sts10/csafe). It should **preserve more words** when creating a compound-safe version of the inputted word list, and I think it's faster than this program. It also has tests.
 
 ## Disclosures
 
