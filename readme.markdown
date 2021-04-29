@@ -1,4 +1,4 @@
-# Compound Passphrase List Safety Checker
+# Compound Passphrase List Safety Checker (Simplified Version)
 
 This command line tool checks whether a given passphrase word list (such as a diceware word list) has any words that can be combined to make another word on the list. It's written in Rust, which I am new to. This is very much **a toy project**, so I'd heavily caution against trusting it for real results. <!--I forked off an earlier version of [this project when it was in a simpler state](https://github.com/sts10/compound-passphrase-list-safety-checker-simple) if you want to check that out.-->
 
